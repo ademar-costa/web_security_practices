@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>DOM XSS Lab</title>
+</head>
+<body>
+    <h1>Painel de Boas-Vindas</h1>
+    
+    <div id="greeting-container" style="border: 2px dashed red; padding: 20px;">
+        <!-- A mensagem aparecerá aqui -->
+    </div>
+
+    <script>
+        // 1. O script lê um valor controlado pelo usuário a partir da URL (Source)
+        const params = new URLSearchParams(window.location.search);
+        let userName = params.get('name');
+
+        if (userName) {
+            // 2. A vulnerabilidade ocorre aqui: usar innerHTML (Sink) em vez de textContent ou innerText
+            // O navegador pega a string e passa pelo parser de HTML, interpretando tags e scripts
+            document.getElementById('greeting-container').innerHTML = "Olá, " + userName + "! Bem-vindo de volta.";
+        } else {
+            document.getElementById('greeting-container').innerHTML = "Adicione ?name=SeuNome na URL.";
+        }
+    </script>
+</body>
+</html>
